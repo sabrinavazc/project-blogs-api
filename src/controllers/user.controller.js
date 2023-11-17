@@ -16,8 +16,17 @@ const listAllUsers = async (_req, res) => {
 
   return res.status(statusCode(response.status)).json(response.data);
 };
+
+const listUsersById = async (req, res) => {
+  const { id } = req.params;
+  
+  const response = await userService.listUsersById(id);
+
+  return res.status(statusCode(response.status)).json(response.data);
+};
   
 module.exports = {
   userCreated,
   listAllUsers,
+  listUsersById,
 };
