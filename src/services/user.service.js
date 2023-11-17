@@ -27,6 +27,15 @@ const createUser = async (userObj) => {
   return { status: 'CREATED', data: { token } };
 };
 
+const listAllUsers = async () => {
+  const allUsers = await User.findAll({
+    attributes: { exclude: ['password'] },
+  });
+
+  return { status: 'SUCCESS', data: allUsers };
+};
+
 module.exports = {
   createUser,
+  listAllUsers,
 };

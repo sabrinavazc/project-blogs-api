@@ -10,7 +10,14 @@ const userCreated = async (req, res) => {
   
   return res.status(statusCode(response.status)).json(response.data);
 };
+
+const listAllUsers = async (_req, res) => {
+  const response = await userService.listAllUsers();
+
+  return res.status(statusCode(response.status)).json(response.data);
+};
   
 module.exports = {
   userCreated,
+  listAllUsers,
 };

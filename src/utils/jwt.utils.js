@@ -14,7 +14,7 @@ const validateToken = (token) => {
 
     return { error: false, data };
   } catch (error) {
-    return { error: true, data: { message: error.message || 'Unknown Error' } };
+    return { error: true, data: { message: 'Expired or invalid token' } };
   }
 };
 
