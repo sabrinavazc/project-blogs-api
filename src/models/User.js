@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 module.exports = (sequelize, DataTypes) => {
   const UserTable = sequelize.define('User', {
     id: {
@@ -13,6 +14,12 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false,
     underscored: true,
   });
+  UserTable.associate = (models) => {
+    UserTable.hasMany(models.BlogPost, {
+      foreginKey: 'userId',
+      as: 'blogPosts',
+    });
+  };
 
   return UserTable;
 };
