@@ -10,6 +10,13 @@ const createCategory = async (name) => {
   return { status: 'CREATED', data: dataValues };
 };
 
+const listAllCategories = async () => {
+  const allCategories = await Category.findAll();
+
+  return { status: 'SUCCESS', data: allCategories };
+};
+
 module.exports = {
   createCategory,
+  listAllCategories,
 };
