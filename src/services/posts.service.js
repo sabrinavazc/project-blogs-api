@@ -1,5 +1,9 @@
-const { PostCategory, Category, BlogPost } = require('../models');
+/* eslint-disable max-lines-per-function */
+const { PostCategory, Category, BlogPost, User } = require('../models');
 const validatePost = require('../utils/validate.post');
+const validateSchema = require('../utils/validate.schema');
+const isUserAuthorized = require('../utils/user.authorized');
+const { updatePostSchema } = require('../schemas/posts.schema');
 
 const createPost = async ({ title, content, user, categoryIds }) => {
   const validationError = validatePost({ title, content, categoryIds });
@@ -31,7 +35,64 @@ const createPost = async ({ title, content, user, categoryIds }) => {
 
   return { status: 'CREATED', data: newPost };
 };
+
+const listAllPosts = async () => {
+  const posts = await BlogPost.findAll({ 
+    include: 
+    [{ model: User, as: 'user', attributes: { exclude: ['password'] } }, 
+      { model: Category, as: 'categories', through: { attributes: [] } }],
+  });
+  return { status: 'SUCCESS', data: posts };
+};
+
+const listPostsById = async (postId) => {
+  const post = await BlogPost.findByPk(postId, { 
+    include: 
+      [{ model: User, as: 'user', attributes: { exclude: ['password'] } }, 
+        { model: Category, as: 'categories', through: { attributes: [] } }],
+  });
+
+  if (!post) {
+    return { status: 'NOT_FOUND', data: { message: 'Post does not exist' } };
+  }
+
+  return { status: 'SUCCESS', data: post };
+};
+
+const updatePost = async (newPostData, userId, postId) => {
+  const validationError = validateSchema(updatePostSchema, newPostData);
+  if (validationError) {
+    return validationError;
+  }
   
+  // Verificar se title e content estão presentes e não são vazios
+  if (!newPostData.title || newPostData.title.length === 0) {
+    return { status: 400, message: 'Some required fields are missing' };
+  }
+
+  if (!isUserAuthorized(userId, postId)) {
+    return { status: 'UNAUTHORIZED', data: { message: 'Unauthorized user' } };
+  }
+
+  await BlogPost.update(newPostData, { where: { id: postId } });
+
+  const updatedPost = await BlogPost.findByPk(postId, {
+    include: [
+      {
+        model: User,
+        as: 'user',
+        attributes: { exclude: ['password'] },
+      },
+      { model: Category, as: 'categories' },
+    ],
+  });
+
+  return { status: 'SUCCESS', data: updatedPost };
+};
+
 module.exports = {
   createPost,
+  listAllPosts,
+  listPostsById,
+  updatePost,
 };
