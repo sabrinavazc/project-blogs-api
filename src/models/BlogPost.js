@@ -4,6 +4,8 @@ const BlogPostTable = (sequelize, DataTypes) => {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
+      allowNull: false,
+      autoIncrement: true,
     },
     title: DataTypes.STRING,
     content: DataTypes.STRING,
@@ -21,7 +23,6 @@ const BlogPostTable = (sequelize, DataTypes) => {
       { foreignKey: 'userId', as: 'user' },
     );
   };
-  
   return blogPost;
 };
   

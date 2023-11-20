@@ -14,7 +14,7 @@ const jwtValidate = (req, res, next) => {
     return res.status(401).json(validateNewObject.data);
   }
   
-  res.user = validateNewObject.data;
+  req.user = validateNewObject.data.payload;
   
   next();
 };
