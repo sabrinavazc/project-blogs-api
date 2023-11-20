@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 const { PostCategory, Category, BlogPost, User } = require('../models');
 const validatePost = require('../utils/validate.post');
 const validateSchema = require('../utils/validate.schema');
@@ -60,22 +59,16 @@ const listPostsById = async (postId) => {
 };
 
 const updatePost = async (newPostData, userId, postId) => {
-  const validationError = validateSchema(updatePostSchema, newPostData);
-  if (validationError) {
-    return validationError;
-  }
-  
-  // Verificar se title e content estão presentes e não são vazios
-  if (!newPostData.title || newPostData.title.length === 0) {
-    return { status: 400, message: 'Some required fields are missing' };
-  }
+  const validateMessage = validateSchema(updatePostSchema, newPostData);
+
+  if (validateMessage) return { status: 'BAD_REQUEST', data: validateMessage };
 
   if (!isUserAuthorized(userId, postId)) {
     return { status: 'UNAUTHORIZED', data: { message: 'Unauthorized user' } };
   }
 
   await BlogPost.update(newPostData, { where: { id: postId } });
-
+  
   const updatedPost = await BlogPost.findByPk(postId, {
     include: [
       {
