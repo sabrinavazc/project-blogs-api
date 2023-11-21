@@ -47,8 +47,15 @@ const listUsersById = async (id) => {
   return { status: 'SUCCESS', data: user };
 };
 
+const deleteMyUser = async (id) => {
+  await User.destroy({ where: { id } });
+
+  return { status: 'DELETED', data: { message: 'User deleted!' } };
+};
+
 module.exports = {
   createUser,
   listAllUsers,
   listUsersById,
+  deleteMyUser,
 };

@@ -18,9 +18,9 @@ const listAllPosts = async (_req, res) => {
 
 const listPostsById = async (req, res) => {
   const { id } = req.params;
-  const serviceResponse = await postService.listPostsById(id);
+  const response = await postService.listPostsById(id);
 
-  return res.status(statusCode(serviceResponse.status)).json(serviceResponse.data);
+  return res.status(statusCode(response.status)).json(response.data);
 };
 
 const updatePost = async (req, res) => {
@@ -35,9 +35,28 @@ const updatePost = async (req, res) => {
   return res.status(statusCode(response.status)).json(response.data);
 };
 
+const deletePostsById = async (req, res) => {
+  const userId = Number(req.user.id);
+  const postId = Number(req.params.id);
+
+  const response = await postService.deletePostsById(postId, userId);
+
+  return res.status(statusCode(response.status)).json(response.data);
+};
+
+const searchPost = async (req, res) => {
+  const { q } = req.query;
+  
+  const response = await postService.searchPost(q);
+
+  return res.status(statusCode(response.status)).json(response.data);
+};
+
 module.exports = {
   createPost,
   listAllPosts,
   listPostsById,
   updatePost,
+  deletePostsById,
+  searchPost,
 };

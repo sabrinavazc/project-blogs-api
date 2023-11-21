@@ -7,5 +7,6 @@ const userRouter = Router();
 userRouter.get('/:id', jwtValidate, userController.listUsersById);
 userRouter.get('/', jwtValidate, userController.listAllUsers);
 userRouter.post('/', userController.userCreated);
+userRouter.delete('/me', jwtValidate, userController.deleteMyUser);
 
 module.exports = userRouter;
